@@ -76,6 +76,14 @@ On the remote server, this command moves the `nginx.config` file from `/tmp/` to
 
 ---
 
+### 6\. Remove Existing docker images,containers,volumes and networks
+
+    ssh -i ~/.ssh/id_ed25519 user@remote_ip "sh docker-clear.sh"
+
+This command navigates to the project directory on the remote server and runs custom script docker-clear.sh.
+
+---
+
 ### 6\. Run Docker Compose
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "cd /path/to/project && docker compose -f docker-compose.prod.yml up -d"

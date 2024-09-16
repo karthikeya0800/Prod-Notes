@@ -1,6 +1,6 @@
 # Setting Up Production Server (Linux)
 
-## Directiry Setup
+## Directory Setup
 
 - Create a new directory for the project
 

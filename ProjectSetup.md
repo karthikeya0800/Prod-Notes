@@ -33,10 +33,19 @@ This script is used for deploying a frontend and backend application, as well as
 - Ensure you have SSH access to the remote server using an SSH key (`id_ed25519`).
 - Nginx should already be installed and running on the remote server.
 - Docker and Docker Compose should also be installed on the remote server.
+- Ensure to run docker compose up in dev mode initially to produce a production-ready frontend.
 
 ---
 
-### 1\. Copy Frontend Files to Temporary Directory on the Remote Server
+### 1\. Change the path to access assets in index.hmtl
+
+    sudo sed -i 's|="/|="/node/|g' frontend/index.html
+
+This command is used to modify the path to access assets in the index.html file of the frontend.It replaces the original path with a new path that includes the backend technology.The modified file is saved in place, without creating a backup.
+
+---
+
+### 2\. Copy Frontend Files to Temporary Directory on the Remote Server
 
     scp -i ~/.ssh/id_ed25519 -r ./frontend/* user@remote_ip:/tmp
 
@@ -44,7 +53,7 @@ This command copies all the frontend files from the local `./frontend` directory
 
 ---
 
-### 2\. Move Frontend Files to Nginx HTML Directory
+### 3\. Move Frontend Files to Nginx HTML Directory
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "sudo rm -rf /var/www/html/* && sudo mv -f /tmp/* /var/www/html/"
 
@@ -52,7 +61,7 @@ On the remote server, this command removes any existing files in the `/var/www/h
 
 ---
 
-### 3\. Copy Backend Files to Project Directory on the Remote Server
+### 4\. Copy Backend Files to Project Directory on the Remote Server
 
     scp -i ~/.ssh/id_ed25519 -r ./backend/* user@remote_ip:/path/to/project
 
@@ -60,7 +69,7 @@ This command copies the backend files from the local `./backend` directory to th
 
 ---
 
-### 4\. Copy Nginx Configuration to Temporary Directory
+### 5\. Copy Nginx Configuration to Temporary Directory
 
     scp -i ~/.ssh/id_ed25519 ./nginx.config user@remote_ip:/tmp
 
@@ -68,7 +77,7 @@ This command transfers the `nginx.config` file from the local machine to the `/t
 
 ---
 
-### 5\. Move Nginx Configuration to Nginx Directory
+### 6\. Move Nginx Configuration to Nginx Directory
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "sudo mv -f /tmp/nginx.config /etc/nginx/sites-available/default"
 
@@ -76,7 +85,7 @@ On the remote server, this command moves the `nginx.config` file from `/tmp/` to
 
 ---
 
-### 6\. Remove Existing docker images,containers,volumes and networks
+### 7\. Remove Existing docker images,containers,volumes and networks
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "sh docker-clear.sh"
 
@@ -84,7 +93,7 @@ This command navigates to the project directory on the remote server and runs cu
 
 ---
 
-### 6\. Run Docker Compose
+### 8\. Run Docker Compose
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "cd /path/to/project && docker compose -f docker-compose.prod.yml up -d"
 
@@ -92,7 +101,7 @@ This command navigates to the project directory on the remote server and starts 
 
 ---
 
-### 7\. Restart Nginx
+### 9\. Restart Nginx
 
     ssh -i ~/.ssh/id_ed25519 user@remote_ip "sudo systemctl restart nginx"
 
@@ -100,6 +109,6 @@ This command restarts the Nginx service on the remote server to apply the new co
 
 ---
 
-### 8\. Deployment Completed
+### 10\. Deployment Completed
 
 The script prints a success message after completing all steps successfully.
